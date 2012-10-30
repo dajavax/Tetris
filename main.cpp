@@ -3,11 +3,11 @@
 
 #include "stdafx.h"
 
-
+#include <windows.h>
 #include <stdlib.h>
 #include <GL/glut.h>
 #include <stdio.h>
-#include <windows.h>
+
 
 void init()
 {
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     glutInitWindowPosition(10,10);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH| GLUT_DOUBLE );
     glutCreateWindow("Tetris");
-    init();    
+    init();
     createList();
     glutDisplayFunc(display);
 	glutKeyboardFunc(myKeyboard);
