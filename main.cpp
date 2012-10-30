@@ -11,7 +11,6 @@
 
 void init()
 {
-	printf_s("hi");
 }
 
 void createList()
