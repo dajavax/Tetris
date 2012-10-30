@@ -3,15 +3,6 @@
 
 #include "stdafx.h"
 
-//
-//  main.cpp
-//  ModeloPoligonalEficiente
-//  Manejo de Listas
-//  Manejo de transparencias
-//  Created by Ma. Guadalupe  Roque on 24/09/12.
-//  Copyright (c) 2012 Tecnológico de Monterrey. All rights reserved.
-//
-
 
 #include <stdlib.h>
 #include <GL/glut.h>
@@ -20,6 +11,7 @@
 
 void init()
 {
+	printf_s("hi");
 }
 
 void createList()

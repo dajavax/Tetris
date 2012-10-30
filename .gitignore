@@ -11,10 +11,13 @@
 *.la
 *.a
 
+#Codeblocks
+*.cbp
+
 #Visual Studio
 ReadMe.txt
 stdafx.cpp
-stdafx.h
 targetver.h
 *.vcxproj
 *.vcxproj.filters
+Debug
