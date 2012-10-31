@@ -13,6 +13,8 @@
 
 #Codeblocks
 *.cbp
+*.layout
+*.depend
 
 #Visual Studio
 ReadMe.txt
