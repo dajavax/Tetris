@@ -11,8 +11,10 @@
 int borx = 90.0;
 int borx2 = 270.0;
 int bory = 560.0;
-double movX = -80;
-double movY = 550;
+int matriz[26][17];
+int tetromino[4][2];
+int movX = -80;
+int movY = 550;
 int figura, rotacion = 0;
 static GLuint texName[36];
 const int TEXTURE_COUNT=6;
@@ -33,6 +35,9 @@ void init(void)
             figura = 3;
             break;
     }
+	memset(matriz, 0, sizeof(matriz[0][0]) * 17 * 26);
+	for(int z=0; z<17; z++)
+		matriz[0][z]=1;
     glClearColor (0.0, 0.0, 0.0, 0.0);
     //glEnable(GL_DEPTH_TEST);
 	glEnable(GL_COLOR_MATERIAL);
@@ -43,6 +48,23 @@ void init(void)
 	glShadeModel(GL_SMOOTH);
 	glLoadIdentity ();
 
+}
+void fijar(int x, int y){
+	printf("%d %d", x, y);
+     matriz[((y-10)/20)+1][0]=1;
+     /*switch (rand()%3+1) {
+        case 1: //cubo
+            figura = 1;
+            break;
+        case 2://Palo
+            figura = 2;
+            break;
+        case 3://ele
+            figura = 3;
+            break;
+    }
+	movX = -80;
+	movY = 550;*/
 }
 //funcion que despliega los bordes
 void borders(){
@@ -89,6 +111,9 @@ void ele(){
         glColor3f(0, 0, 1);
         glPushMatrix();
             glTranslatef(0,0,0);
+			int mat[4][4];
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			fijar(mat[3][0], mat[3][1]);
             glutSolidCube(20);
         glPopMatrix();
         glPushMatrix();
@@ -224,6 +249,21 @@ void ele(){
         glPopMatrix();
     glPopMatrix();
  }
+ void fijos(){
+	 for(int i=1; i<26; i++){
+		 for(int z=0; z<17; z++){
+			 switch(matriz[i][z]){
+				case 1:
+					glPushMatrix();
+						glColor3f(0, 1, 0);
+						glTranslatef(movX,((i-1)*20)+10,0);
+						glutSolidCube(20);
+					glPopMatrix();
+					break;
+			 }
+		 }
+	 }
+ }
  void figuraActual(int numero){
      switch (numero) {
         case 1:
@@ -244,8 +284,9 @@ void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     borders();
-    zeta();
-    //figuraActual(figura);
+    //zeta();
+	fijos();
+    figuraActual(figura);
     cuadricula();
     glutSwapBuffers();
 	//glMatrixMode(GL_MODELVIEW);
