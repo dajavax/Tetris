@@ -14,6 +14,8 @@ int bory = 560.0;
 double movX = -80;
 double movY = 550;
 int figura, rotacion = 0;
+static GLuint texName[36];
+const int TEXTURE_COUNT=6;
 
 
 void init(void)
@@ -171,6 +173,7 @@ void ele(){
         glPopMatrix();
     glPopMatrix();
  }
+
  void ese(){
     glPushMatrix();
         glTranslatef(movX,movY,0);
@@ -199,7 +202,13 @@ void ele(){
         glRotatef(rotacion, 0, 0, 1);
         glColor3f(0, 1, .60);
         glPushMatrix();
+
+             glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+            glEnable(GL_TEXTURE_GEN_T);
+            //glBindTexture(GL_TEXTURE_2D, theTexture[2]);
             glutSolidCube(20);
+            glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+            glDisable(GL_TEXTURE_GEN_T);
         glPopMatrix();
         glPushMatrix();
             glTranslatef(0,20,0);
