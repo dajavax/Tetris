@@ -11,16 +11,11 @@
 #include "imageloader.h"
 int borx = 360.0;
 int bory = 560.0;
-<<<<<<< HEAD
 int matriz[26][17];
 int tetromino[4][2];
-int movX = -80;
+int movX = 170;
 int movY = 550;
-=======
 int avance = 20;
-double movX = 170;
-double movY = 550;
->>>>>>> 86172d4a78c9b9a76dfff0b4a7503289a2b7d29b
 int figura, rotacion = 0;
 static GLuint texName[36];
 const int TEXTURE_COUNT=6;
