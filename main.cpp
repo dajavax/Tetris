@@ -690,17 +690,36 @@ void ele(){
  void fijos(){
 	 for(int i=1; i<29; i++){
 		 for(int z=0; z<18; z++){
+			 glPushMatrix();
+			 bool cont=true;
 			 switch(matriz[i][z]){
-				case 0:
-				 break;
+				case 1:
+					glColor3f(1, 0, 0);
+					break;
+				case 2:
+					glColor3f(0, 1, 0);
+					break;
+				case 3:
+					glColor3f(0, 0, 1);
+					break;
+				case 4:
+					glColor3f(1, 1, 0);
+					break;
+				case 5:
+					glColor3f(.62, .12, .94);
+					break;
+				case 6:
+					glColor3f(0, 1, .60);
+					break;
 				default:
-					glPushMatrix();
-						glColor3f(0, 1, 0);
-						glTranslatef((z*20)+10,((i-1)*20)+10,0);
-						glutSolidCube(20);
-					glPopMatrix();
+					cont=false;
 					break;
 			 }
+			 if(cont){
+				 glTranslatef((z*20)+10,((i-1)*20)+10,0);
+				 glutSolidCube(20);
+			 }
+			 glPopMatrix();
 		 }
 	 }
  }
