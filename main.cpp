@@ -11,11 +11,12 @@
 #include "imageloader.h"
 int borx = 360.0;
 int bory = 560.0;
-int matriz[26][17];
+int matriz[29][18];
 int tetromino[4][2];
 int movX = 170;
 int movY = 550;
 int avance = 20;
+int tocaPiso=0;
 int figura, rotacion = 0;
 static GLuint texName[36];
 const int TEXTURE_COUNT=6;
@@ -36,8 +37,8 @@ void init(void)
             figura = 3;
             break;
     }
-	memset(matriz, 0, sizeof(matriz[0][0]) * 17 * 26);
-	for(int z=0; z<17; z++)
+	memset(matriz, 0, sizeof(matriz[0][0]) * 18 * 29);
+	for(int z=0; z<18; z++)
 		matriz[0][z]=1;
     glClearColor (0.0, 0.0, 0.0, 0.0);
     //glEnable(GL_DEPTH_TEST);
@@ -51,10 +52,28 @@ void init(void)
 	glLoadIdentity ();
 
 }
+int checarLimites(int x, int y){
+	if(x<10){
+		movX+=20;
+		return true;
+	}
+	if(x>350){
+		movX-=20;
+		return true;
+	}
+	if(matriz[((y-10)/20)+1][(x-10)/20]!=0){
+		tocaPiso++;
+		movY+=20;
+		return true;
+	}
+	return false;
+}
 void fijar(int x, int y){
-	printf("%d %d", x, y);
-     matriz[((y-10)/20)+1][0]=1;
-     /*switch (rand()%3+1) {
+	matriz[((y-10)/20)+1][(x-10)/20]=1;
+}
+void nuevaPieza(){
+	tocaPiso=0;
+	switch (rand()%3+1) {
         case 1: //cubo
             figura = 1;
             break;
@@ -64,9 +83,9 @@ void fijar(int x, int y){
         case 3://ele
             figura = 3;
             break;
-    }
-	movX = -80;
-	movY = 550;*/
+	}
+	movX = 170;
+	movY = 550;
 }
 //Makes the image into a texture, and returns the id of the texture
 void loadTexture(Image* image,int k)
@@ -166,31 +185,90 @@ void cuadricula(){
 	glEnd();
 }
 void ele(){
+	int mat[4][4];
     glPushMatrix();
         glTranslatef(movX,movY,0);
         glRotatef(rotacion, 0, 0, 1);
         glColor3f(0, 0, 1);
         glPushMatrix();
             glTranslatef(0,0,0);
-			int mat[4][4];
 			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
-			fijar(mat[3][0], mat[3][1]);
-            glutSolidCube(20);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ele();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(0,20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ele();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(0,-20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ele();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(20,-20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ele();
+				return;
+			}
         glPopMatrix();
     glPopMatrix();
-
+	if(tocaPiso>1){
+		nuevaPieza();
+	} else {
+		glPushMatrix();
+			glTranslatef(movX,movY,0);
+			glRotatef(rotacion, 0, 0, 1);
+			glColor3f(0, 0, 1);
+			glPushMatrix();
+				glTranslatef(0,0,0);
+				glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+				//if(fijar(mat[3][0], mat[3][1]))
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(0,20,0);
+				glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(0,-20,0);
+				glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(20,-20,0);
+				glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+				glutSolidCube(20);
+			glPopMatrix();
+		glPopMatrix();
+	}
 }
  void cubo(){
     glPushMatrix();
@@ -310,13 +388,15 @@ void ele(){
     glPopMatrix();
  }
  void fijos(){
-	 for(int i=1; i<26; i++){
-		 for(int z=0; z<17; z++){
+	 for(int i=1; i<29; i++){
+		 for(int z=0; z<18; z++){
 			 switch(matriz[i][z]){
-				case 1:
+				case 0:
+				 break;
+				default:
 					glPushMatrix();
 						glColor3f(0, 1, 0);
-						glTranslatef(movX,((i-1)*20)+10,0);
+						glTranslatef((z*20)+10,((i-1)*20)+10,0);
 						glutSolidCube(20);
 					glPopMatrix();
 					break;
@@ -345,8 +425,9 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     borders();
     //zeta();
+    //figuraActual(figura);
+	ele();
 	fijos();
-    figuraActual(figura);
     cuadricula();
     glutSwapBuffers();
 	//glMatrixMode(GL_MODELVIEW);
@@ -393,17 +474,12 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
 void special(int key, int x, int y){
     switch (key) {
         case GLUT_KEY_LEFT:
-            if(movX >= 20){
                 movX=movX-avance;
                 glutPostRedisplay();
-
-                }
                 break;
         case GLUT_KEY_RIGHT:
-            if(movX <= 340){
                 movX=movX+avance;
             glutPostRedisplay();
-            }
             break;
         case GLUT_KEY_DOWN:
             movY=movY-avance;
