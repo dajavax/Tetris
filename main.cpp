@@ -16,7 +16,7 @@ int tetromino[4][2];
 int movX, movY, movXant, movYant, bajo;
 int avance = 20;
 int tocaPiso;
-int figura, rotacion = 0, rotacionant=0;
+int figura, rotacion = 0, rotacionant=0, rapidez;
 static GLuint texName[36];
 const int TEXTURE_COUNT=6;
 
@@ -64,6 +64,7 @@ void fijar(int x, int y){
 	}
 }
 void nuevaPieza(){
+	rapidez=500;
 	tocaPiso=0;
 	bajo=0;
 	switch (rand()%6+1) {
@@ -764,7 +765,7 @@ void myTimer( int valor)
 	updateAnteriores();
     movY = movY - avance;
     glutPostRedisplay();
-    glutTimerFunc(500, myTimer,1);
+    glutTimerFunc(rapidez, myTimer,1);
 }
 
 void reshape(int w, int h)
@@ -795,6 +796,9 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
     case 'E':
     case 'e':
         exit(-1);
+	case ' ':
+		rapidez=1;
+		break;
     default:
         break;
     }
