@@ -13,45 +13,15 @@ int borx = 360.0;
 int bory = 560.0;
 int matriz[29][18];
 int tetromino[4][2];
-int movX = 170;
-int movY = 550;
+int movX;
+int movY;
 int avance = 20;
-int tocaPiso=0;
+int tocaPiso;
 int figura, rotacion = 0;
 static GLuint texName[36];
 const int TEXTURE_COUNT=6;
 
 
-void init(void)
-{
-    srand(time(NULL));
-        //crea el random de las figuras inicial
-     switch (rand()%3+1) {
-        case 1: //cubo
-            figura = 1;
-            break;
-        case 2://Palo
-            figura = 2;
-            break;
-        case 3://ele
-            figura = 3;
-            break;
-    }
-	memset(matriz, 0, sizeof(matriz[0][0]) * 18 * 29);
-	for(int z=0; z<18; z++)
-		matriz[0][z]=1;
-    glClearColor (0.0, 0.0, 0.0, 0.0);
-    //glEnable(GL_DEPTH_TEST);
-	glEnable(GL_COLOR_MATERIAL);
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_NORMALIZE);
-	glShadeModel(GL_SMOOTH);
-	   glEnable(GL_TEXTURE_2D);
-	glLoadIdentity ();
-
-}
 int checarLimites(int x, int y){
 	if(x<10){
 		movX+=20;
@@ -69,7 +39,7 @@ int checarLimites(int x, int y){
 	return false;
 }
 void fijar(int x, int y){
-	matriz[((y-10)/20)+1][(x-10)/20]=1;
+	matriz[((y-10)/20)+1][(x-10)/20]=figura;
 }
 void nuevaPieza(){
 	tocaPiso=0;
@@ -86,6 +56,26 @@ void nuevaPieza(){
 	}
 	movX = 170;
 	movY = 550;
+}
+void init(void)
+{
+    srand(time(NULL));
+        //crea el random de las figuras inicial
+    nuevaPieza();
+	memset(matriz, 0, sizeof(matriz[0][0]) * 18 * 29);
+	for(int z=0; z<18; z++)
+		matriz[0][z]=1;
+    glClearColor (0.0, 0.0, 0.0, 0.0);
+    //glEnable(GL_DEPTH_TEST);
+	glEnable(GL_COLOR_MATERIAL);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_NORMALIZE);
+	glShadeModel(GL_SMOOTH);
+	   glEnable(GL_TEXTURE_2D);
+	glLoadIdentity ();
+
 }
 //Makes the image into a texture, and returns the id of the texture
 void loadTexture(Image* image,int k)
