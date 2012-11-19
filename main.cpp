@@ -13,7 +13,7 @@ int borx = 360.0;
 int bory = 560.0;
 int matriz[29][18];
 int tetromino[4][2];
-int movX, movY, movXant, movYant;
+int movX, movY, movXant, movYant, bajo;
 int avance = 20;
 int tocaPiso;
 int figura, rotacion = 0, rotacionant=0;
@@ -46,7 +46,7 @@ int checarLimites(int x, int y){
 	return false;
 }
 void fijar(int x, int y){
-	int fila=((y-10)/20)+1;
+	int fila=((y-10-bajo)/20)+1;
 	matriz[fila][(x-10)/20]=figura;
 	bool clear=true;
 	for(int z=0; z<18&&clear; z++)
@@ -60,11 +60,12 @@ void fijar(int x, int y){
 		for(int z=0; z<18; z++){
 			matriz[28][z]=0;
 		}
-		movY-=20;
+		bajo+=20;
 	}
 }
 void nuevaPieza(){
 	tocaPiso=0;
+	bajo=0;
 	switch (rand()%6+1) {
         case 1: //cubo
             figura = 1;
