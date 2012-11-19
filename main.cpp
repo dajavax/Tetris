@@ -36,7 +36,8 @@ int checarLimites(int x, int y){
 		return true;
 	}
 	if((((y-10)/20)+1)<29&&matriz[((y-10)/20)+1][(x-10)/20]!=0){
-		tocaPiso++;
+		if(movYant>movY||tocaPiso>0)
+			tocaPiso++;
 		movY=movYant;
 		movX=movXant;
 		rotacion=rotacionant;
@@ -498,11 +499,13 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
 void special(int key, int x, int y){
     switch (key) {
         case GLUT_KEY_LEFT:
+				tocaPiso=0;
 				updateAnteriores();
                 movX=movX-avance;
                 glutPostRedisplay();
                 break;
         case GLUT_KEY_RIGHT:
+				tocaPiso=0;
 				updateAnteriores();
                 movX=movX+avance;
 				glutPostRedisplay();
@@ -513,6 +516,7 @@ void special(int key, int x, int y){
             glutPostRedisplay();
             break;
         case GLUT_KEY_UP:
+			tocaPiso=0;
 			updateAnteriores();
             rotacion-=90;
             glutPostRedisplay();
