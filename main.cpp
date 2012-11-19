@@ -39,7 +39,22 @@ int checarLimites(int x, int y){
 	return false;
 }
 void fijar(int x, int y){
-	matriz[((y-10)/20)+1][(x-10)/20]=figura;
+	int fila=((y-10)/20)+1;
+	matriz[fila][(x-10)/20]=figura;
+	bool clear=true;
+	for(int z=0; z<18&&clear; z++)
+		clear=clear&&matriz[fila][z]!=0;
+	if(clear){
+		for(int i=fila+1; i<29; i++){
+			for(int z=0; z<18; z++){
+				matriz[i-1][z]=matriz[i][z];
+			}
+		}
+		for(int z=0; z<18; z++){
+			matriz[28][z]=0;
+		}
+		movY-=20;
+	}
 }
 void nuevaPieza(){
 	tocaPiso=0;
@@ -414,7 +429,6 @@ void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     borders();
-    //zeta();
     //figuraActual(figura);
 	ele();
 	fijos();
