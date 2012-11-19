@@ -76,13 +76,13 @@ void nuevaPieza(){
             figura = 3;
             break;
         case 4://te
-            figura = 3;
+            figura = 4;
             break;
         case 5://ese
-            figura = 3;
+            figura = 5;
             break;
         case 6://zeta
-            figura = 3;
+            figura = 6;
             break;
 	}
 	movX = movXant = 170;
@@ -287,121 +287,405 @@ void ele(){
 	}
 }
  void cubo(){
+	int mat[4][4];
     glPushMatrix();
         glTranslatef(movX,movY,0);
-        //glRotatef(rotacion, 0, 0, 1);
         glColor3f(1, 0, 0);
         glPushMatrix();
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				cubo();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(-20,0,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				cubo();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(-20,-20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				cubo();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(0,-20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				cubo();
+				return;
+			}
         glPopMatrix();
     glPopMatrix();
+	if(tocaPiso>1){
+		nuevaPieza();
+	} else {
+		glPushMatrix();
+			glTranslatef(movX,movY,0);
+			glColor3f(1, 0, 0);
+			glPushMatrix();
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(-20,0,0);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(-20,-20,0);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(0,-20,0);
+				glutSolidCube(20);
+			glPopMatrix();
+		glPopMatrix();
+	}
  }
  void palo(){
+	 int mat[4][4];
      glPushMatrix();
         glTranslatef(movX,movY,0);
         glRotatef(rotacion, 0, 0, 1);
         glColor3f(0, 1, 0);
         glPushMatrix();
             glTranslatef(0,0,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				palo();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(0,20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				palo();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(0,-20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				palo();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(0,-40,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				palo();
+				return;
+			}
         glPopMatrix();
     glPopMatrix();
+	if(tocaPiso>1){
+		nuevaPieza();
+	} else {
+		 glPushMatrix();
+			glTranslatef(movX,movY,0);
+			glRotatef(rotacion, 0, 0, 1);
+			glColor3f(0, 1, 0);
+			glPushMatrix();
+				glTranslatef(0,0,0);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(0,20,0);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(0,-20,0);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(0,-40,0);
+				glutSolidCube(20);
+			glPopMatrix();
+		glPopMatrix();
+	}
  }
  void te(){
+	 int mat[4][4];
       glPushMatrix();
         glTranslatef(movX,movY,0);
         glRotatef(rotacion, 0, 0, 1);
         glColor3f(1, 1, 0);
         glPushMatrix();
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				te();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(-20,0,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				te();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(20,0,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				te();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(0,20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				te();
+				return;
+			}
         glPopMatrix();
     glPopMatrix();
+	if(tocaPiso>1){
+		nuevaPieza();
+	} else {
+		  glPushMatrix();
+			glTranslatef(movX,movY,0);
+			glRotatef(rotacion, 0, 0, 1);
+			glColor3f(1, 1, 0);
+			glPushMatrix();
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(-20,0,0);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(20,0,0);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(0,20,0);
+				glutSolidCube(20);
+			glPopMatrix();
+		glPopMatrix();
+	}
  }
  void ese(){
+	int mat[4][4];
     glPushMatrix();
         glTranslatef(movX,movY,0);
         glRotatef(rotacion, 0, 0, 1);
         glColor3f(.62, .12, .94);
         glPushMatrix();
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ese();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(20,0,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ese();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(-20,-20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ese();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(0,-20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ese();
+				return;
+			}
         glPopMatrix();
     glPopMatrix();
+	if(tocaPiso>1){
+		nuevaPieza();
+	} else {
+		glPushMatrix();
+			glTranslatef(movX,movY,0);
+			glRotatef(rotacion, 0, 0, 1);
+			glColor3f(.62, .12, .94);
+			glPushMatrix();
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(20,0,0);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(-20,-20,0);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(0,-20,0);
+				glutSolidCube(20);
+			glPopMatrix();
+		glPopMatrix();
+	}
  }
  void zeta(){
+	 int mat[4][4];
     glPushMatrix();
         glTranslatef(movX,movY,0);
         glRotatef(rotacion, 0, 0, 1);
         glColor3f(0, 1, .60);
         glPushMatrix();
-
-             glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
-            glEnable(GL_TEXTURE_GEN_T);
-            glBindTexture(GL_TEXTURE_2D, texName[3]);
-            glutSolidCube(20);
-            glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
-            glDisable(GL_TEXTURE_GEN_T);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				zeta();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(0,20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				zeta();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(-20,20,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				zeta();
+				return;
+			}
         glPopMatrix();
         glPushMatrix();
             glTranslatef(20,0,0);
-            glutSolidCube(20);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				zeta();
+				return;
+			}
         glPopMatrix();
     glPopMatrix();
+	if(tocaPiso>1){
+		nuevaPieza();
+	} else {
+		glPushMatrix();
+			glTranslatef(movX,movY,0);
+			glRotatef(rotacion, 0, 0, 1);
+			glColor3f(0, 1, .60);
+			glPushMatrix();
+
+				 //glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+				//glEnable(GL_TEXTURE_GEN_T);
+				//glBindTexture(GL_TEXTURE_2D, texName[3]);
+				glutSolidCube(20);
+				//glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+				//glDisable(GL_TEXTURE_GEN_T);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(0,20,0);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(-20,20,0);
+				glutSolidCube(20);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(20,0,0);
+				glutSolidCube(20);
+			glPopMatrix();
+		glPopMatrix();
+	}
  }
  void fijos(){
 	 for(int i=1; i<29; i++){
@@ -449,8 +733,7 @@ void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     borders();
-    //figuraActual(figura);
-	ele();
+    figuraActual(figura);
 	fijos();
     cuadricula();
     glutSwapBuffers();
