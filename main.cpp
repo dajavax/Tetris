@@ -13,15 +13,19 @@ int borx = 360.0;
 int bory = 560.0;
 int matriz[29][18];
 int tetromino[4][2];
-int movX;
-int movY;
+int movX, movY, movXant, movYant;
 int avance = 20;
 int tocaPiso;
-int figura, rotacion = 0;
+int figura, rotacion = 0, rotacionant=0;
 static GLuint texName[36];
 const int TEXTURE_COUNT=6;
 
 
+void updateAnteriores(){
+	rotacionant=rotacion;
+	movXant=movX;
+	movYant=movY;
+}
 int checarLimites(int x, int y){
 	if(x<10){
 		movX+=20;
@@ -31,9 +35,11 @@ int checarLimites(int x, int y){
 		movX-=20;
 		return true;
 	}
-	if(matriz[((y-10)/20)+1][(x-10)/20]!=0){
+	if((((y-10)/20)+1)<29&&matriz[((y-10)/20)+1][(x-10)/20]!=0){
 		tocaPiso++;
-		movY+=20;
+		movY=movYant;
+		movX=movXant;
+		rotacion=rotacionant;
 		return true;
 	}
 	return false;
@@ -58,7 +64,7 @@ void fijar(int x, int y){
 }
 void nuevaPieza(){
 	tocaPiso=0;
-	switch (rand()%3+1) {
+	switch (rand()%6+1) {
         case 1: //cubo
             figura = 1;
             break;
@@ -68,9 +74,18 @@ void nuevaPieza(){
         case 3://ele
             figura = 3;
             break;
+        case 4://te
+            figura = 3;
+            break;
+        case 5://ese
+            figura = 3;
+            break;
+        case 6://zeta
+            figura = 3;
+            break;
 	}
-	movX = 170;
-	movY = 550;
+	movX = movXant = 170;
+	movY = movYant = 550;
 }
 void init(void)
 {
@@ -253,23 +268,18 @@ void ele(){
 			glColor3f(0, 0, 1);
 			glPushMatrix();
 				glTranslatef(0,0,0);
-				glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
-				//if(fijar(mat[3][0], mat[3][1]))
 				glutSolidCube(20);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(0,20,0);
-				glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
 				glutSolidCube(20);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(0,-20,0);
-				glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
 				glutSolidCube(20);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(20,-20,0);
-				glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
 				glutSolidCube(20);
 			glPopMatrix();
 		glPopMatrix();
@@ -420,6 +430,15 @@ void ele(){
         case 3:
             ele();
             break;
+        case 4:
+            te();
+            break;
+        case 5:
+            ese();
+            break;
+        case 6:
+            zeta();
+            break;
         default:
             break;
     }
@@ -438,6 +457,7 @@ void display()
 }
 void myTimer( int valor)
 {
+	updateAnteriores();
     movY = movY - avance;
     glutPostRedisplay();
     glutTimerFunc(500, myTimer,1);
@@ -478,19 +498,23 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
 void special(int key, int x, int y){
     switch (key) {
         case GLUT_KEY_LEFT:
+				updateAnteriores();
                 movX=movX-avance;
                 glutPostRedisplay();
                 break;
         case GLUT_KEY_RIGHT:
+				updateAnteriores();
                 movX=movX+avance;
-            glutPostRedisplay();
-            break;
+				glutPostRedisplay();
+				break;
         case GLUT_KEY_DOWN:
+			updateAnteriores();
             movY=movY-avance;
             glutPostRedisplay();
             break;
         case GLUT_KEY_UP:
-            rotacion+=90;
+			updateAnteriores();
+            rotacion-=90;
             glutPostRedisplay();
             break;
     }
