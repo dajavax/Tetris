@@ -9,23 +9,128 @@
 #include <math.h>
 #include <time.h>
 #include "imageloader.h"
+
 int borx = 360.0;
 int bory = 560.0;
 int matriz[29][18];
 int tetromino[4][2];
+int inicioV = 0;
 int movX, movY, movXant, movYant, bajo;
-int avance = 20;
+int avance = 0;
+int pausaV = 0;
+char msg[50];
 int tocaPiso;
+int mensaje;//apuntadore de la lista
 int figura, rotacion = 0, rotacionant=0, rapidez;
 static GLuint texName[36];
 const int TEXTURE_COUNT=6;
-
-
+int score = 0;
+float light_ambient [] = {0.0,0.2,0.0,1.0};
+float light_diffuse_specular [] = {0.8,0.8,0.8,1.0};
+float light_pos [] = {0.0,0.0,5.0,1.0};
+float spot_dir [] = {0.0,0.0,-1.0};
+float spot_cutoff = 30.0;
+float spot_exponent = 1.0;
+float focus_emission [] = {0.8,0.8,0.8,1.0};
 void updateAnteriores(){
 	rotacionant=rotacion;
 	movXant=movX;
 	movYant=movY;
 }
+//Luz ambiente
+GLfloat mat_ambient2[][4] = {
+    {0.0215, 0.1745, 0.0215,1.0},
+    {0.135, 0.2225, 0.1575,1.0},
+    {0.05375, 0.05, 0.06625,1.0},
+    {0.25, 0.20725, 0.20725,1.0},
+    {0.1745, 0.01175, 0.01175,1.0},
+    {0.1, 0.18725, 0.1745,1.0},
+    {0.329412, 0.223529, 0.027451, 1.0},
+    {0.2125, 0.1275, 0.054, 1.0},
+    {0.25, 0.25, 0.25, 1.0},
+    {0.19125, 0.0735, 0.0225, 1.0},
+    {0.24725, 0.1995, 0.0745, 1.0},
+    {0.19225, 0.19225, 0.19225, 1.0},
+    {0.0, 0.0, 0.0},
+    {0.0, 0.1, 0.06},
+    {0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0},
+    {0.02, 0.02, 0.02,1.0},
+    {0.0, 0.05, 0.05,1.0},
+    {0.0, 0.05, 0.0,1.0},
+    {0.05, 0.0, 0.0,1.0},
+    {0.05, 0.05, 0.05,1.0},
+    { 0.05, 0.05, 0.0,1.0}
+
+};
+
+
+//luz difusa
+GLfloat mat_diffuse2[][4] = {
+    {0.07568, 0.61424, 0.07568,1.0},
+    {0.54, 0.89, 0.63,1.0},
+    {0.18275, 0.17, 0.22525,1.0},
+    {1, 0.829, 0.829,1.0},
+    {0.61424, 0.04136, 0.04136, 1.0},
+    {0.396, 0.74151, 0.69102,1.0},
+    {0.780392, 0.568627, 0.113725, 1.0},
+    {0.714, 0.4284, 0.18144, 1.0},
+    {0.4, 0.4, 0.4, 1.0},
+    {0.7038, 0.27048, 0.0828, 1.0},
+    {0.75164, 0.60648, 0.22648, 1.0},
+    {0.50754, 0.50754, 0.50754, 1.0},
+    {0.01, 0.01, 0.01, 1.0},
+    {0.0, 0.50980392, 0.50980392,1.0},
+    {0.1, 0.35, 0.1, 1.0},
+    {0.5, 0.0, 0.0,1.0},
+    {0.55, 0.55, 0.55,1.0},
+    {0.5, 0.5, 0.0,1.0},
+    {0.01,0.01, 0.01, 1.0},
+    {0.4, 0.5, 0.5, 1.0},
+    { 0.4, 0.5, 0.4, 1.0},
+    { 0.5, 0.4, 0.4, 1.0},
+    {0.5, 0.5, 0.5, 1.0},
+    {0.5, 0.5, 0.4, 1.0}
+};
+
+//especular
+GLfloat mat_specular2[][4] = {
+    {0.633,0.727811,0.633,1.0},
+    {0.316228, 0.316228, 0.316228, 0.1},
+    {0.332741, 0.328634, 0.346435,1.0},
+    {0.296648, 0.296648, 0.296648,1.0},
+    {0.727811, 0.626959, 0.626959,1.0},
+    {0.297254, 0.30829, 0.306678,1.0},
+    {0.992157, 0.941176, 0.807843, 1.0},
+    {0.393548, 0.271906, 0.166721, 1.0},
+    {0.774597, 0.774597, 0.774597, 1.0},
+    {0.256777, 0.137622, 0.086014, 1.0},
+    {0.628281, 0.555802, 0.366065, 1.0},
+    {0.508273, 0.508273, 0.508273, 1.0},
+    {0.50, 0.50, 0.50,1.0},
+    {0.50196078, 0.50196078, 0.50196078, 1.0},
+    {0.45, 0.55, 0.45, 1.0},
+    {0.7, 0.6, 0.6, 1.0},
+    {0.70, 0.70, 0.70, 1.0},
+    {0.60, 0.60, 0.50,1.0},
+    {0.4, 0.4, 0.4,1.0},
+    { 0.04, 0.7, 0.7,1.0},
+    {0.04, 0.7, 0.04,1.0},
+    {0.7, 0.04, 0.04,1.0},
+    {0.7, 0.7, 0.7,1.0},
+    {0.7, 0.7, 0.04,1.0}
+};
+
+//brillo
+GLfloat mat_shininess2[][1] = {
+{0.6},{0.1},{0.3},{0.088}, {0.6},{0.1},
+{ 0.21794872},{ 0.2},{ 0.6},{ 0.1},{ 0.4},{ 0.4},
+{.25},{.25},{.25},{.25},{.25},{.25},
+{0.078125},{.078125},{.078125},{.078125},{.078125},{.078125},{.078125}
+};
+
 int checarLimites(int x, int y){
 	if(x<10){
 		movX+=20;
@@ -63,6 +168,25 @@ void fijar(int x, int y){
 		bajo+=20;
 	}
 }
+void displayScore()
+{
+    glColor3f(1.0,1.0,1.0);
+	glRasterPos2f(10.9,10.9);
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)'S');
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)'c');
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)'o');
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)'r');
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)'e');
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)':');
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)' ');
+	char string [4];
+	itoa(score,string,10);
+	for(int i=0; string[i]!='\0'; i++)
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)string[i]);
+
+
+}
+
 void nuevaPieza(){
 	rapidez=500;
 	tocaPiso=0;
@@ -138,11 +262,19 @@ void loadTexture(Image* image,int k)
 
 }
 void initRendering()
-{GLuint i=0;
-       GLfloat ambientLight[] = {0.2f, 0.2f, 0.2f, 1.0f};
+{     srand(time(NULL));
+
+        //crea el random de las figuras inicial
+    nuevaPieza();
+	memset(matriz, 0, sizeof(matriz[0][0]) * 18 * 29);
+	for(int z=0; z<18; z++)
+		matriz[0][z]=1;
+    glClearColor (0.0, 0.0, 0.0, 0.0);
+    GLuint i=0;
+       GLfloat ambientLight[] = {10.2f, 10.2f, 10.2f, 1.0f};
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
 
-    GLfloat directedLight[] = {0.9f, 0.9f, 0.9f, 1.0f};
+    GLfloat directedLight[] = {10.9f, 10.9f, 10.9f, 1.0f};
     GLfloat directedLightPos[] = {-10.0f, 15.0f, 20.0f, 0.0f};
     glLightfv(GL_LIGHT0, GL_DIFFUSE, directedLight);
     glLightfv(GL_LIGHT0, GL_POSITION, directedLightPos);
@@ -157,22 +289,64 @@ void initRendering()
     glGenTextures(36, texName); //Make room for our texture
     Image* image;
 
-
-    image = loadBMP("/Users/Raul/Desktop/7mo/Graficas/3er Parcial/Proyectos/Texturas/img/imagen1.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/7mo/Graficas/3er Parcial/Proyectos/Texturas/img/imagen2.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/7mo/Graficas/3er Parcial/Proyectos/Texturas/img/imagen3.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/7mo/Graficas/3er Parcial/Proyectos/Texturas/img/imagen4.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/7mo/Graficas/3er Parcial/Proyectos/Texturas/img/imagen5.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/7mo/Graficas/3er Parcial/Proyectos/Texturas/img/imagen6.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/7mo/Graficas/3er Parcial/Proyectos/Texturas/img/imagen7.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/7mo/Graficas/3er Parcial/Proyectos/Texturas/img/imagen8.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/7mo/Graficas/3er Parcial/Proyectos/Texturas/img/imagen9.bmp");loadTexture(image,i++);
+image = loadBMP("/Users/Raul/Desktop/Tetris/img/fondo.bmp");loadTexture(image,i++);
+    image = loadBMP("/Users/Raul/Desktop/Tetris/img/negro.bmp");loadTexture(image,i++);
+    image = loadBMP("/Users/Raul/Desktop/Tetris/img/celeste.bmp");loadTexture(image,i++);
+    image = loadBMP("/Users/Raul/Desktop/Tetris/img/azul.bmp");loadTexture(image,i++);
+    image = loadBMP("/Users/Raul/Desktop/Tetris/img/amarillo.bmp");loadTexture(image,i++);
+    image = loadBMP("/Users/Raul/Desktop/Tetris/img/verde.bmp");loadTexture(image,i++);
+    image = loadBMP("/Users/Raul/Desktop/Tetris/img/morado.bmp");loadTexture(image,i++);
+    image = loadBMP("/Users/Raul/Desktop/Tetris/img/rojo.bmp");loadTexture(image,i++);
+    image = loadBMP("/Users/Raul/Desktop/Tetris/img/ini.bmp");loadTexture(image,i++);
+    image = loadBMP("/Users/Raul/Desktop/Tetris/img/fin.bmp");loadTexture(image,i++);
+    image = loadBMP("/Users/Raul/Desktop/Tetris/img/pausar.bmp");loadTexture(image,i++);
     delete image;
+}
+void inicio(){
+    glBindTexture(GL_TEXTURE_2D, texName[8]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0.0f);
+         glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(560.0f, 0.0f, 0.0f);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(560.0f, 560.0f, 0.0f);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(0.0f, 560.0f, 0.0f);
+        glEnd();
+}
+void Pausar(){
+    glBindTexture(GL_TEXTURE_2D, texName[10]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(300.0f, 0.0f, 0.0f);
+         glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(560.0f, 0.0f, 0.0f);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(560.0f, 560.0f, 0.0f);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(300.0f, 560.0f, 0.0f);
+        glEnd();
+}
+void fin(){
+    glBindTexture(GL_TEXTURE_2D, texName[9]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0.0f);
+         glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(560.0f, 0.0f, 0.0f);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(560.0f, 560.0f, 0.0f);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(0.0f, 560.0f, 0.0f);
+        glEnd();
 }
 //funcion que despliega los bordes
 void borders(){
+
+
      //cuadro exterior
-    glColor3f(0.5, 0.5, 0.8);
+   /* glColor3f(0.5, 0.5, 0.8);
 	glBegin(GL_QUADS);
 	glVertex3f(borx+10,-10,0.0);
 	glVertex3f(borx+10,bory+10,0.0);
@@ -186,12 +360,43 @@ void borders(){
 	glVertex3f(borx,bory,0.0);
 	glVertex3f(0,bory,0.0);
 	glVertex3f(0,0,0.0);
-	glEnd();
+	glEnd();*/
 }
+
+void procesaMenu(int val){
+	if(val == 1){
+		exit(0);
+	} else if(val == 2){
+
+	}else if(val == 3){
+        if(avance == 0){
+            avance = 20;
+        }
+        else{
+            avance = 0;
+        }
+	}
+	glutPostRedisplay();
+}
+
+void addMenues(){
+	int mainMenu, subMenu1, subMenu2, subMenu3,subMenu4;
+	mainMenu = glutCreateMenu(procesaMenu);
+
+	glutSetMenu(mainMenu);
+
+	glutAddMenuEntry("Terminar Juego", 1);
+	glutAddMenuEntry("Iniciar Otro", 2);
+	glutAddMenuEntry("Pausar", 3);
+	glutSetMenu(mainMenu);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+}
+
 //para que marque la separación entre lo cubos
 void cuadricula(){
+    displayScore();
     //lineas verticuales
-    glColor3f(0, 0, 0);
+    glColor3f(1, 1, 0);
 	 glLineWidth(2);
 	glBegin(GL_LINES);
 	for (double x=0.0; x<=360; x=x+20){
@@ -206,6 +411,17 @@ void cuadricula(){
 		glVertex2d(360,y);
 	}
 	glEnd();
+	glBindTexture(GL_TEXTURE_2D, texName[0]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(-20.0f, -20.0f, 0.0f);
+         glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(580.0f, -20.0f, 0.0f);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(580.0f, 580.0f, 0.0f);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(-20.0f, 580.0f, 0.0f);
+        glEnd();
 }
 void ele(){
 	int mat[4][4];
@@ -271,19 +487,39 @@ void ele(){
 			glColor3f(0, 0, 1);
 			glPushMatrix();
 				glTranslatef(0,0,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[3]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(0,20,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[3]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(0,-20,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[3]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(20,-20,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[3]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 		glPopMatrix();
 	}
@@ -348,20 +584,39 @@ void ele(){
 			glTranslatef(movX,movY,0);
 			glColor3f(1, 0, 0);
 			glPushMatrix();
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[4]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(-20,0,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[4]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(-20,-20,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[4]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(0,-20,0);
-				glutSolidCube(20);
-			glPopMatrix();
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[4]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);			glPopMatrix();
 		glPopMatrix();
 	}
  }
@@ -429,19 +684,41 @@ void ele(){
 			glColor3f(0, 1, 0);
 			glPushMatrix();
 				glTranslatef(0,0,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[2]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
+
+
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(0,20,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[2]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(0,-20,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[2]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(0,-40,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[2]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 		glPopMatrix();
 	}
@@ -508,19 +785,38 @@ void ele(){
 			glRotatef(rotacion, 0, 0, 1);
 			glColor3f(1, 1, 0);
 			glPushMatrix();
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[6]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(-20,0,0);
-				glutSolidCube(20);
-			glPopMatrix();
+glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[6]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(20,0,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[6]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(0,20,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[6]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 		glPopMatrix();
 	}
@@ -587,19 +883,39 @@ void ele(){
 			glRotatef(rotacion, 0, 0, 1);
 			glColor3f(.62, .12, .94);
 			glPushMatrix();
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[5]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(20,0,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[5]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(-20,-20,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[5]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(0,-20,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[5]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 		glPopMatrix();
 	}
@@ -667,24 +983,39 @@ void ele(){
 			glColor3f(0, 1, .60);
 			glPushMatrix();
 
-				 //glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
-				//glEnable(GL_TEXTURE_GEN_T);
-				//glBindTexture(GL_TEXTURE_2D, texName[3]);
-				glutSolidCube(20);
-				//glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
-				//glDisable(GL_TEXTURE_GEN_T);
+				 glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[7]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(0,20,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[7]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(-20,20,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[7]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 			glPushMatrix();
 				glTranslatef(20,0,0);
-				glutSolidCube(20);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[7]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			glPopMatrix();
 		glPopMatrix();
 	}
@@ -750,13 +1081,46 @@ void ele(){
     }
 }
 
+void lightSpot(){
+glPushMatrix();
+    glScaled(1, 1, 1);
+    //glRotatef(-100.0,1.0,0.0,0.0);
+    glTranslatef(10.0,0.0,0.0);
+    //glRotatef(rot_angle_y,0.0,1.0,0.0);
+    //glRotatef(rot_angle_x,1.0,0.0,0.0);
+    glLightfv(GL_LIGHT0,GL_POSITION,light_pos);
+    glLightfv(GL_LIGHT0,GL_SPOT_DIRECTION,spot_dir);
+    glTranslatef(light_pos[0],light_pos[1],light_pos[2]);
+    //glTranslatef(trax*0.2,light_pos[1],tray*0.2);
+    glColorMaterial(GL_FRONT,GL_EMISSION);
+    glEnable(GL_COLOR_MATERIAL);
+    glColor4fv(focus_emission);
+
+
+}
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    borders();
+    //checa si esta pausado
+    //lightSpot();
+
+
+    if(pausaV == 1){
+        Pausar();
+    }//checa si esta en el iniio
+    if(inicioV == 0){
+        avance == 0;
+       inicio();
+
+       //inicioV = 1;
+       }
+        else{
     figuraActual(figura);
-	fijos();
-    cuadricula();
+	fijos();}
+    borders();
+        cuadricula();
+
     glutSwapBuffers();
 	//glMatrixMode(GL_MODELVIEW);
 }
@@ -787,10 +1151,17 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
     case 'p':
         if(avance == 0){
             avance = 20;
+            pausaV = 0;
         }
         else{
             avance = 0;
+            pausaV = 1;
         }
+		break;
+case 'I':
+    case 'i':
+        inicioV = 1;
+        avance = 20;
 		break;
 
     case 'E':
@@ -839,13 +1210,15 @@ int main(int argc, char *argv[])
     glutInitWindowSize(640,680);
     glutInitWindowPosition(10,10);
     glutCreateWindow("Tetris");
-    init();
+    //init();
+    initRendering();
     //createList();
     glutDisplayFunc(display);
 	glutKeyboardFunc(myKeyboard);
 	glutSpecialFunc(special);
     glutReshapeFunc(reshape);
 	glutTimerFunc(500,myTimer,1);
+	addMenues();
     glutMainLoop();
     return 0;
 }
