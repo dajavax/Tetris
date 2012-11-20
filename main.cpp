@@ -15,6 +15,7 @@ int bory = 560.0;
 int matriz[29][18];
 int tetromino[4][2];
 int inicioV = 0;
+bool finJ = false;
 int movX, movY, movXant, movYant, bajo;
 int avance = 0;
 int pausaV = 0;
@@ -167,7 +168,7 @@ int checarLimites(int x, int y){
 void fijar(int x, int y){
 	int fila=((y-10-bajo)/20)+1;
 	if(fila>28){
-		fin();
+		finJ=true;
 	} else {
 		matriz[fila][(x-10)/20]=figura;
 		bool clear=true;
@@ -1116,7 +1117,9 @@ void display()
     //checa si esta pausado
     //lightSpot();
 
-
+	if(finJ){
+		fin();
+	} else{
     if(pausaV == 1){
         Pausar();
     }//checa si esta en el iniio
@@ -1131,7 +1134,7 @@ void display()
 	fijos();}
     borders();
         cuadricula();
-
+	}
     glutSwapBuffers();
 	//glMatrixMode(GL_MODELVIEW);
 }
