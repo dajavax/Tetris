@@ -131,6 +131,20 @@ GLfloat mat_shininess2[][1] = {
 {0.078125},{.078125},{.078125},{.078125},{.078125},{.078125},{.078125}
 };
 
+void fin(){
+    glBindTexture(GL_TEXTURE_2D, texName[9]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0.0f);
+         glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(560.0f, 0.0f, 0.0f);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(560.0f, 560.0f, 0.0f);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(0.0f, 560.0f, 0.0f);
+        glEnd();
+}
+
 int checarLimites(int x, int y){
 	if(x<10){
 		movX+=20;
@@ -152,20 +166,24 @@ int checarLimites(int x, int y){
 }
 void fijar(int x, int y){
 	int fila=((y-10-bajo)/20)+1;
-	matriz[fila][(x-10)/20]=figura;
-	bool clear=true;
-	for(int z=0; z<18&&clear; z++)
-		clear=clear&&matriz[fila][z]!=0;
-	if(clear){
-		for(int i=fila+1; i<29; i++){
-			for(int z=0; z<18; z++){
-				matriz[i-1][z]=matriz[i][z];
+	if(fila>28){
+		fin();
+	} else {
+		matriz[fila][(x-10)/20]=figura;
+		bool clear=true;
+		for(int z=0; z<18&&clear; z++)
+			clear=clear&&matriz[fila][z]!=0;
+		if(clear){
+			for(int i=fila+1; i<29; i++){
+				for(int z=0; z<18; z++){
+					matriz[i-1][z]=matriz[i][z];
+				}
 			}
+			for(int z=0; z<18; z++){
+				matriz[28][z]=0;
+			}
+			bajo+=20;
 		}
-		for(int z=0; z<18; z++){
-			matriz[28][z]=0;
-		}
-		bajo+=20;
 	}
 }
 void displayScore()
@@ -180,7 +198,7 @@ void displayScore()
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)':');
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)' ');
 	char string [4];
-	itoa(score,string,10);
+	_itoa_s(score,string,10);
 	for(int i=0; string[i]!='\0'; i++)
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)string[i]);
 
@@ -289,17 +307,17 @@ void initRendering()
     glGenTextures(36, texName); //Make room for our texture
     Image* image;
 
-image = loadBMP("/Users/Raul/Desktop/Tetris/img/fondo.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/Tetris/img/negro.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/Tetris/img/celeste.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/Tetris/img/azul.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/Tetris/img/amarillo.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/Tetris/img/verde.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/Tetris/img/morado.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/Tetris/img/rojo.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/Tetris/img/ini.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/Tetris/img/fin.bmp");loadTexture(image,i++);
-    image = loadBMP("/Users/Raul/Desktop/Tetris/img/pausar.bmp");loadTexture(image,i++);
+image = loadBMP("img/fondo.bmp");loadTexture(image,i++);
+    image = loadBMP("img/negro.bmp");loadTexture(image,i++);
+    image = loadBMP("img/celeste.bmp");loadTexture(image,i++);
+    image = loadBMP("img/azul.bmp");loadTexture(image,i++);
+    image = loadBMP("img/amarillo.bmp");loadTexture(image,i++);
+    image = loadBMP("img/verde.bmp");loadTexture(image,i++);
+    image = loadBMP("img/morado.bmp");loadTexture(image,i++);
+    image = loadBMP("img/rojo.bmp");loadTexture(image,i++);
+    image = loadBMP("img/ini.bmp");loadTexture(image,i++);
+    image = loadBMP("img/fin.bmp");loadTexture(image,i++);
+    image = loadBMP("img/pausar.bmp");loadTexture(image,i++);
     delete image;
 }
 void inicio(){
@@ -326,19 +344,6 @@ void Pausar(){
         glVertex3f(560.0f, 560.0f, 0.0f);
         glTexCoord2f(0.0f, 1.0f);
         glVertex3f(300.0f, 560.0f, 0.0f);
-        glEnd();
-}
-void fin(){
-    glBindTexture(GL_TEXTURE_2D, texName[9]);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 0.0f);
-        glVertex3f(0.0f, 0.0f, 0.0f);
-         glTexCoord2f(1.0f, 0.0f);
-        glVertex3f(560.0f, 0.0f, 0.0f);
-        glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(560.0f, 560.0f, 0.0f);
-        glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(0.0f, 560.0f, 0.0f);
         glEnd();
 }
 //funcion que despliega los bordes
@@ -1025,24 +1030,26 @@ glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
 		 for(int z=0; z<18; z++){
 			 glPushMatrix();
 			 bool cont=true;
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
 			 switch(matriz[i][z]){
 				case 1:
-					glColor3f(1, 0, 0);
+					glBindTexture(GL_TEXTURE_2D, texName[7]);
 					break;
 				case 2:
-					glColor3f(0, 1, 0);
+					glBindTexture(GL_TEXTURE_2D, texName[7]);
 					break;
 				case 3:
-					glColor3f(0, 0, 1);
+					glBindTexture(GL_TEXTURE_2D, texName[7]);
 					break;
 				case 4:
-					glColor3f(1, 1, 0);
+					glBindTexture(GL_TEXTURE_2D, texName[7]);
 					break;
 				case 5:
-					glColor3f(.62, .12, .94);
+					glBindTexture(GL_TEXTURE_2D, texName[7]);
 					break;
 				case 6:
-					glColor3f(0, 1, .60);
+					glBindTexture(GL_TEXTURE_2D, texName[7]);
 					break;
 				default:
 					cont=false;
@@ -1050,8 +1057,10 @@ glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
 			 }
 			 if(cont){
 				 glTranslatef((z*20)+10,((i-1)*20)+10,0);
-				 glutSolidCube(20);
+				 glutSolidCube(18);
 			 }
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
 			 glPopMatrix();
 		 }
 	 }
