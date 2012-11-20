@@ -15,6 +15,7 @@ int bory = 560.0;
 int matriz[29][18];
 int tetromino[4][2];
 int inicioV = 0;
+bool finJ = false;
 int movX, movY, movXant, movYant, bajo;
 int avance = 0;
 int pausaV = 0;
@@ -167,13 +168,14 @@ int checarLimites(int x, int y){
 void fijar(int x, int y){
 	int fila=((y-10-bajo)/20)+1;
 	if(fila>28){
-		fin();
+		finJ=true;
 	} else {
 		matriz[fila][(x-10)/20]=figura;
 		bool clear=true;
 		for(int z=0; z<18&&clear; z++)
 			clear=clear&&matriz[fila][z]!=0;
 		if(clear){
+			score++;
 			for(int i=fila+1; i<29; i++){
 				for(int z=0; z<18; z++){
 					matriz[i-1][z]=matriz[i][z];
@@ -237,6 +239,7 @@ void init(void)
     srand(time(NULL));
         //crea el random de las figuras inicial
     nuevaPieza();
+	score=0;
 	memset(matriz, 0, sizeof(matriz[0][0]) * 18 * 29);
 	for(int z=0; z<18; z++)
 		matriz[0][z]=1;
@@ -1136,19 +1139,19 @@ glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glEnable(GL_TEXTURE_GEN_T);
 			 switch(matriz[i][z]){
 				case 1:
-					glBindTexture(GL_TEXTURE_2D, texName[7]);
+					glBindTexture(GL_TEXTURE_2D, texName[4]);
 					break;
 				case 2:
-					glBindTexture(GL_TEXTURE_2D, texName[7]);
+					glBindTexture(GL_TEXTURE_2D, texName[2]);
 					break;
 				case 3:
-					glBindTexture(GL_TEXTURE_2D, texName[7]);
+					glBindTexture(GL_TEXTURE_2D, texName[3]);
 					break;
 				case 4:
-					glBindTexture(GL_TEXTURE_2D, texName[7]);
+					glBindTexture(GL_TEXTURE_2D, texName[6]);
 					break;
 				case 5:
-					glBindTexture(GL_TEXTURE_2D, texName[7]);
+					glBindTexture(GL_TEXTURE_2D, texName[5]);
 					break;
 				case 6:
 					glBindTexture(GL_TEXTURE_2D, texName[7]);
@@ -1216,7 +1219,9 @@ void display()
     //checa si esta pausado
     //lightSpot();
 
-
+	if(finJ){
+		fin();
+	} else{
     if(pausaV == 1){
         Pausar();
     }//checa si esta en el iniio
@@ -1231,7 +1236,7 @@ void display()
 	fijos();}
     borders();
         cuadricula();
-
+	}
     glutSwapBuffers();
 	//glMatrixMode(GL_MODELVIEW);
 }
