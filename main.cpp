@@ -198,7 +198,7 @@ void displayScore()
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)':');
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)' ');
 	char string [4];
-	_itoa_s(score,string,10);
+	itoa(score,string,10);
 	for(int i=0; string[i]!='\0'; i++)
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)string[i]);
 
@@ -318,6 +318,7 @@ image = loadBMP("img/fondo.bmp");loadTexture(image,i++);
     image = loadBMP("img/ini.bmp");loadTexture(image,i++);
     image = loadBMP("img/fin.bmp");loadTexture(image,i++);
     image = loadBMP("img/pausar.bmp");loadTexture(image,i++);
+    image = loadBMP("img/naranja.bmp");loadTexture(image,i++);
     delete image;
 }
 void inicio(){
@@ -522,6 +523,107 @@ void ele(){
 				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glEnable(GL_TEXTURE_GEN_T);
                 glBindTexture(GL_TEXTURE_2D, texName[3]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
+			glPopMatrix();
+		glPopMatrix();
+	}
+}
+void eleI(){
+	int mat[4][4];
+    glPushMatrix();
+        glTranslatef(movX,movY,0);
+        glRotatef(rotacion, 0, 0, 1);
+        glColor3f(0, 0, 1);
+        glPushMatrix();
+            glTranslatef(0,0,0);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ele();
+				return;
+			}
+        glPopMatrix();
+        glPushMatrix();
+            glTranslatef(0,20,0);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ele();
+				return;
+			}
+        glPopMatrix();
+        glPushMatrix();
+            glTranslatef(0,-20,0);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ele();
+				return;
+			}
+        glPopMatrix();
+        glPushMatrix();
+            glTranslatef(20,-20,0);
+			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
+			if(tocaPiso>1){
+				fijar(mat[3][0], mat[3][1]);
+			} else if(checarLimites(mat[3][0], mat[3][1])){
+				glPopMatrix();
+				glPopMatrix();
+				ele();
+				return;
+			}
+        glPopMatrix();
+    glPopMatrix();
+	if(tocaPiso>1){
+		nuevaPieza();
+	} else {
+		glPushMatrix();
+			glTranslatef(movX,movY,0);
+			glRotatef(rotacion, 0, 0, 1);
+			glColor3f(0, 0, 1);
+			glPushMatrix();
+				glTranslatef(0,0,0);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[11]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(0,20,0);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[11]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(0,-20,0);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[11]);
+                glutSolidCube(18);
+                glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glDisable(GL_TEXTURE_GEN_T);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(20,20,0);
+				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+                glEnable(GL_TEXTURE_GEN_T);
+                glBindTexture(GL_TEXTURE_2D, texName[11]);
                 glutSolidCube(18);
                 glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glDisable(GL_TEXTURE_GEN_T);
