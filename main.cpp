@@ -174,6 +174,7 @@ void fijar(int x, int y){
 		for(int z=0; z<18&&clear; z++)
 			clear=clear&&matriz[fila][z]!=0;
 		if(clear){
+			score++;
 			for(int i=fila+1; i<29; i++){
 				for(int z=0; z<18; z++){
 					matriz[i-1][z]=matriz[i][z];
@@ -237,6 +238,7 @@ void init(void)
     srand(time(NULL));
         //crea el random de las figuras inicial
     nuevaPieza();
+	score=0;
 	memset(matriz, 0, sizeof(matriz[0][0]) * 18 * 29);
 	for(int z=0; z<18; z++)
 		matriz[0][z]=1;
@@ -1034,19 +1036,19 @@ glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glEnable(GL_TEXTURE_GEN_T);
 			 switch(matriz[i][z]){
 				case 1:
-					glBindTexture(GL_TEXTURE_2D, texName[7]);
+					glBindTexture(GL_TEXTURE_2D, texName[4]);
 					break;
 				case 2:
-					glBindTexture(GL_TEXTURE_2D, texName[7]);
+					glBindTexture(GL_TEXTURE_2D, texName[2]);
 					break;
 				case 3:
-					glBindTexture(GL_TEXTURE_2D, texName[7]);
+					glBindTexture(GL_TEXTURE_2D, texName[3]);
 					break;
 				case 4:
-					glBindTexture(GL_TEXTURE_2D, texName[7]);
+					glBindTexture(GL_TEXTURE_2D, texName[6]);
 					break;
 				case 5:
-					glBindTexture(GL_TEXTURE_2D, texName[7]);
+					glBindTexture(GL_TEXTURE_2D, texName[5]);
 					break;
 				case 6:
 					glBindTexture(GL_TEXTURE_2D, texName[7]);
