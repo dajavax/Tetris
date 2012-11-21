@@ -210,6 +210,7 @@ void displayScore()
 
 }
 void figSiguiente(int siguiente){
+
     glBindTexture(GL_TEXTURE_2D, texName[siguiente+11]);
         glBegin(GL_QUADS);
         glTexCoord2f(0.0f, 0.0f);
@@ -223,6 +224,7 @@ void figSiguiente(int siguiente){
         glEnd();
 }
 void nuevaPieza(){
+         PlaySound((LPCSTR) "C:/Users/Raul/Desktop/Tetris/img/prize.WAV", NULL, SND_FILENAME | SND_ASYNC);
 
 	rapidez=500;
 	tocaPiso=0;
