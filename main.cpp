@@ -224,7 +224,7 @@ void figSiguiente(int siguiente){
         glEnd();
 }
 void nuevaPieza(){
-         PlaySound((LPCSTR) "C:/Users/Raul/Desktop/Tetris/img/prize.WAV", NULL, SND_FILENAME | SND_ASYNC);
+         PlaySound((LPCWSTR) "img/prize.WAV", NULL, SND_FILENAME | SND_ASYNC);
 
 	rapidez=500;
 	tocaPiso=0;
@@ -418,7 +418,7 @@ void procesaMenu(int val){
 }
 
 void addMenues(){
-	int mainMenu, subMenu1, subMenu2, subMenu3,subMenu4;
+	int mainMenu;
 	mainMenu = glutCreateMenu(procesaMenu);
 
 	glutSetMenu(mainMenu);
@@ -1261,7 +1261,7 @@ void display()
         Pausar();
     }//checa si esta en el iniio
     if(inicioV == 0){
-        avance == 0;
+        avance = 0;
        inicio();
 
        //inicioV = 1;
