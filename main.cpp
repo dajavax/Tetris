@@ -9,6 +9,7 @@
 #include <math.h>
 #include <time.h>
 #include "imageloader.h"
+#include <mmsystem.h>
 
 int borx = 360.0;
 int bory = 560.0;
