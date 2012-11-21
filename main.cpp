@@ -200,7 +200,7 @@ void displayScore()
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)':');
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)' ');
 	char string [4];
-	itoa(score,string,10);
+	_itoa_s(score,string,10);
 	for(int i=0; string[i]!='\0'; i++)
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)string[i]);
 
@@ -211,7 +211,7 @@ void nuevaPieza(){
 	rapidez=500;
 	tocaPiso=0;
 	bajo=0;
-	switch (rand()%6+1) {
+	switch (rand()%7+1) {
         case 1: //cubo
             figura = 1;
             break;
@@ -230,6 +230,9 @@ void nuevaPieza(){
         case 6://zeta
             figura = 6;
             break;
+		case 7://elei
+			figura = 7;
+			break;
 	}
 	movX = movXant = 170;
 	movY = movYant = 550;
@@ -498,7 +501,7 @@ void ele(){
 				glTranslatef(0,0,0);
 				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glEnable(GL_TEXTURE_GEN_T);
-                glBindTexture(GL_TEXTURE_2D, texName[3]);
+                glBindTexture(GL_TEXTURE_2D, texName[11]);
                 glutSolidCube(18);
                 glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glDisable(GL_TEXTURE_GEN_T);
@@ -507,7 +510,7 @@ void ele(){
 				glTranslatef(0,20,0);
 				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glEnable(GL_TEXTURE_GEN_T);
-                glBindTexture(GL_TEXTURE_2D, texName[3]);
+                glBindTexture(GL_TEXTURE_2D, texName[11]);
                 glutSolidCube(18);
                 glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glDisable(GL_TEXTURE_GEN_T);
@@ -516,7 +519,7 @@ void ele(){
 				glTranslatef(0,-20,0);
 				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glEnable(GL_TEXTURE_GEN_T);
-                glBindTexture(GL_TEXTURE_2D, texName[3]);
+                glBindTexture(GL_TEXTURE_2D, texName[11]);
                 glutSolidCube(18);
                 glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glDisable(GL_TEXTURE_GEN_T);
@@ -525,7 +528,7 @@ void ele(){
 				glTranslatef(20,-20,0);
 				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glEnable(GL_TEXTURE_GEN_T);
-                glBindTexture(GL_TEXTURE_2D, texName[3]);
+                glBindTexture(GL_TEXTURE_2D, texName[11]);
                 glutSolidCube(18);
                 glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glDisable(GL_TEXTURE_GEN_T);
@@ -547,7 +550,7 @@ void eleI(){
 			} else if(checarLimites(mat[3][0], mat[3][1])){
 				glPopMatrix();
 				glPopMatrix();
-				ele();
+				eleI();
 				return;
 			}
         glPopMatrix();
@@ -559,7 +562,7 @@ void eleI(){
 			} else if(checarLimites(mat[3][0], mat[3][1])){
 				glPopMatrix();
 				glPopMatrix();
-				ele();
+				eleI();
 				return;
 			}
         glPopMatrix();
@@ -571,19 +574,19 @@ void eleI(){
 			} else if(checarLimites(mat[3][0], mat[3][1])){
 				glPopMatrix();
 				glPopMatrix();
-				ele();
+				eleI();
 				return;
 			}
         glPopMatrix();
         glPushMatrix();
-            glTranslatef(20,-20,0);
+            glTranslatef(20,20,0);
 			glGetIntegerv(GL_MODELVIEW_MATRIX, &mat[0][0]);
 			if(tocaPiso>1){
 				fijar(mat[3][0], mat[3][1]);
 			} else if(checarLimites(mat[3][0], mat[3][1])){
 				glPopMatrix();
 				glPopMatrix();
-				ele();
+				eleI();
 				return;
 			}
         glPopMatrix();
@@ -599,7 +602,7 @@ void eleI(){
 				glTranslatef(0,0,0);
 				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glEnable(GL_TEXTURE_GEN_T);
-                glBindTexture(GL_TEXTURE_2D, texName[11]);
+                glBindTexture(GL_TEXTURE_2D, texName[3]);
                 glutSolidCube(18);
                 glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glDisable(GL_TEXTURE_GEN_T);
@@ -608,7 +611,7 @@ void eleI(){
 				glTranslatef(0,20,0);
 				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glEnable(GL_TEXTURE_GEN_T);
-                glBindTexture(GL_TEXTURE_2D, texName[11]);
+                glBindTexture(GL_TEXTURE_2D, texName[3]);
                 glutSolidCube(18);
                 glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glDisable(GL_TEXTURE_GEN_T);
@@ -617,7 +620,7 @@ void eleI(){
 				glTranslatef(0,-20,0);
 				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glEnable(GL_TEXTURE_GEN_T);
-                glBindTexture(GL_TEXTURE_2D, texName[11]);
+                glBindTexture(GL_TEXTURE_2D, texName[3]);
                 glutSolidCube(18);
                 glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glDisable(GL_TEXTURE_GEN_T);
@@ -626,7 +629,7 @@ void eleI(){
 				glTranslatef(20,20,0);
 				glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glEnable(GL_TEXTURE_GEN_T);
-                glBindTexture(GL_TEXTURE_2D, texName[11]);
+                glBindTexture(GL_TEXTURE_2D, texName[3]);
                 glutSolidCube(18);
                 glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
                 glDisable(GL_TEXTURE_GEN_T);
@@ -1145,7 +1148,7 @@ glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
 					glBindTexture(GL_TEXTURE_2D, texName[2]);
 					break;
 				case 3:
-					glBindTexture(GL_TEXTURE_2D, texName[3]);
+					glBindTexture(GL_TEXTURE_2D, texName[11]);
 					break;
 				case 4:
 					glBindTexture(GL_TEXTURE_2D, texName[6]);
@@ -1155,6 +1158,9 @@ glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
 					break;
 				case 6:
 					glBindTexture(GL_TEXTURE_2D, texName[7]);
+					break;
+				case 7:
+					glBindTexture(GL_TEXTURE_2D, texName[3]);
 					break;
 				default:
 					cont=false;
@@ -1190,6 +1196,9 @@ glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
         case 6:
             zeta();
             break;
+		case 7:
+			eleI();
+			break;
         default:
             break;
     }
