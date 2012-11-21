@@ -224,7 +224,7 @@ void figSiguiente(int siguiente){
         glEnd();
 }
 void nuevaPieza(){
-         PlaySound((LPCWSTR) "img/prize.WAV", NULL, SND_FILENAME | SND_ASYNC);
+         PlaySound(L"img/prize.wav", NULL, SND_FILENAME | SND_ASYNC);
 
 	rapidez=500;
 	tocaPiso=0;
