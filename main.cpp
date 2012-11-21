@@ -194,14 +194,7 @@ void fijar(int x, int y){
 void displayScore()
 {
     glColor3f(1.0,1.0,1.0);
-	glRasterPos2f(10.9,10.9);
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)'S');
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)'c');
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)'o');
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)'r');
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)'e');
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)':');
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (GLubyte)' ');
+	glRasterPos2f(480,510);
 	char string [4];
 	_itoa_s(score,string,10);
 	for(int i=0; string[i]!='\0'; i++)
