@@ -9,9 +9,11 @@
 #include <math.h>
 #include <time.h>
 #include "imageloader.h"
+#include <mmsystem.h>
 
 int borx = 360.0;
 int bory = 560.0;
+
 int matriz[29][18];
 int tetromino[4][2];
 int inicioV = 0;
@@ -26,6 +28,7 @@ int figura, rotacion = 0, rotacionant=0, rapidez;
 static GLuint texName[36];
 const int TEXTURE_COUNT=6;
 int score = 0;
+int siguiente = 3;
 float light_ambient [] = {0.0,0.2,0.0,1.0};
 float light_diffuse_specular [] = {0.8,0.8,0.8,1.0};
 float light_pos [] = {0.0,0.0,5.0,1.0};
@@ -206,32 +209,46 @@ void displayScore()
 
 
 }
-
+void figSiguiente(int siguiente){
+    glBindTexture(GL_TEXTURE_2D, texName[siguiente+11]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(470.0f, 400.0f, 0.0f);
+         glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(520.0f, 400.0f, 0.0f);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(520.0f, 445.0f, 0.0f);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(470.0f, 445.0f, 0.0f);
+        glEnd();
+}
 void nuevaPieza(){
+
 	rapidez=500;
 	tocaPiso=0;
 	bajo=0;
+	figura = siguiente;
 	switch (rand()%7+1) {
         case 1: //cubo
-            figura = 1;
+            siguiente = 1;
             break;
         case 2://Palo
-            figura = 2;
+            siguiente = 2;
             break;
         case 3://ele
-            figura = 3;
+            siguiente = 3;
             break;
         case 4://te
-            figura = 4;
+            siguiente = 4;
             break;
         case 5://ese
-            figura = 5;
+            siguiente = 5;
             break;
         case 6://zeta
-            figura = 6;
+            siguiente = 6;
             break;
 		case 7://elei
-			figura = 7;
+			siguiente = 7;
 			break;
 	}
 	movX = movXant = 170;
@@ -312,7 +329,6 @@ void initRendering()
     // glEnable(GL_COLOR_MATERIAL);
     glGenTextures(36, texName); //Make room for our texture
     Image* image;
-
 image = loadBMP("img/fondo.bmp");loadTexture(image,i++);
     image = loadBMP("img/negro.bmp");loadTexture(image,i++);
     image = loadBMP("img/celeste.bmp");loadTexture(image,i++);
@@ -325,6 +341,14 @@ image = loadBMP("img/fondo.bmp");loadTexture(image,i++);
     image = loadBMP("img/fin.bmp");loadTexture(image,i++);
     image = loadBMP("img/pausar.bmp");loadTexture(image,i++);
     image = loadBMP("img/naranja.bmp");loadTexture(image,i++);
+    image = loadBMP("img/cubo.bmp");loadTexture(image,i++);
+    image = loadBMP("img/palo.bmp");loadTexture(image,i++);
+	image = loadBMP("img/elei.bmp");loadTexture(image,i++);
+    image = loadBMP("img/te.bmp");loadTexture(image,i++);
+    image = loadBMP("img/ese.bmp");loadTexture(image,i++);
+    image = loadBMP("img/zeta.bmp");loadTexture(image,i++);
+	image = loadBMP("img/ele.bmp");loadTexture(image,i++);
+	printf_s("%d", i);
     delete image;
 }
 void inicio(){
@@ -1241,7 +1265,9 @@ void display()
        //inicioV = 1;
        }
         else{
+    figSiguiente(siguiente);
     figuraActual(figura);
+    //siguiente = nuevaPieza();
 	fijos();}
     borders();
         cuadricula();
